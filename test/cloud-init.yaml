@@ -1,0 +1,14 @@
+#cloud-config
+hostname: tessel-test
+ssh_pwauth: false
+
+users:
+  - name: dev
+    groups: wheel
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+      - SSH_PUBKEY_PLACEHOLDER
+
+
