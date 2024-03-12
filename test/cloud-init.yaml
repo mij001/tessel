@@ -1,14 +1,21 @@
 #cloud-config
 hostname: tessel-test
-ssh_pwauth: false
+ssh_pwauth: true
 
 users:
   - name: dev
     groups: wheel
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
-    lock_passwd: true
+    lock_passwd: false
+    plain_text_passwd: tessel
     ssh_authorized_keys:
       - SSH_PUBKEY_PLACEHOLDER
 
+  - path: /root/tessel.pub
+    content: |
+      SSH_PUBKEY_PLACEHOLDER
 
+runcmd:
+  - [ sh, -c, "mkdir -p /home/dev/.ssh && cat /root/tessel.pub > /home/dev/.ssh/authorized_keys" ]
+  - [ sh, -c, "chown -R dev:dev /home/dev/.ssh; chmod 700 /home/dev/.ssh; chmod 600 /home/dev/.ssh/authorized_keys" ]
