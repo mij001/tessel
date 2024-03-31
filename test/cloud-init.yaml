@@ -19,3 +19,5 @@ users:
 runcmd:
   - [ sh, -c, "mkdir -p /home/dev/.ssh && cat /root/tessel.pub > /home/dev/.ssh/authorized_keys" ]
   - [ sh, -c, "chown -R dev:dev /home/dev/.ssh; chmod 700 /home/dev/.ssh; chmod 600 /home/dev/.ssh/authorized_keys" ]
+  # f40 is eol, its mirrors are gone. point dnf at the archive.
+  - [ sh, -c, "sed -i -e 's|^metalink=|#metalink=|' -e 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://dl.fedoraproject.org/pub/archive/fedora/linux|' /etc/yum.repos.d/fedora*.repo" ]
