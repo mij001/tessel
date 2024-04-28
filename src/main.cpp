@@ -14,6 +14,22 @@ int main(void) {
 		return 1;
 	}
 
+	const char *socket = wl_display_add_socket_auto(s.display);
+	if (!socket) {
+		wlr_log(WLR_ERROR, "no socket");
+		return 1;
+	}
+
+	if (!wlr_backend_start(s.backend)) {
+		wlr_log(WLR_ERROR, "backend start failed");
+		return 1;
+	}
+
+	setenv("WAYLAND_DISPLAY", socket, true);
+	wlr_log(WLR_INFO, "tessel up on %s", socket);
+	wl_display_run(s.display);
+
+	wl_display_destroy_clients(s.display);
 	wlr_backend_destroy(s.backend);
 	wl_display_destroy(s.display);
 	return 0;
