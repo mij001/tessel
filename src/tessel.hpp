@@ -7,11 +7,18 @@
 
 extern "C" {
 #include <wlr/backend.h>
+#include <wlr/render/allocator.h>
+#include <wlr/render/wlr_renderer.h>
+#include <wlr/types/wlr_compositor.h>
+#include <wlr/types/wlr_subcompositor.h>
+#include <wlr/types/wlr_data_device.h>
 #include <wlr/util/log.h>
 }
 
 struct Server {
 	wl_display *display;
 	wlr_backend *backend;
+	wlr_renderer *renderer;
+	wlr_allocator *allocator;
 };
 
