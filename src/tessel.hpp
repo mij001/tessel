@@ -12,6 +12,9 @@ extern "C" {
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_subcompositor.h>
 #include <wlr/types/wlr_data_device.h>
+#include <wlr/types/wlr_output.h>
+#include <wlr/types/wlr_output_layout.h>
+#include <wlr/types/wlr_scene.h>
 #include <wlr/util/log.h>
 }
 
@@ -20,5 +23,19 @@ struct Server {
 	wlr_backend *backend;
 	wlr_renderer *renderer;
 	wlr_allocator *allocator;
+	wlr_output_layout *output_layout;
+	wlr_scene *scene;
+	wlr_scene_output_layout *scene_layout;
+	wl_listener new_output;
+	wl_list outputs;
+
+};
+
+struct Output {
+	wl_list link;
+	Server *server;
+	wlr_output *out;
+	wl_listener frame;
+	wl_listener destroy;
 };
 
