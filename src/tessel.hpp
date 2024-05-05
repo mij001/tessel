@@ -39,3 +39,6 @@ struct Output {
 	wl_listener destroy;
 };
 
+// output.cpp
+void new_output(wl_listener *l, void *data);
+
