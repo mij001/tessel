@@ -2,8 +2,11 @@ PKGS := wlroots-0.18 wayland-server xkbcommon pixman-1
 
 CXX ?= g++
 CXXFLAGS ?= -O2 -g -std=c++17 -Wall -Wextra -Wno-unused-parameter
-CXXFLAGS += -DWLR_USE_UNSTABLE -Ibuild/include $(shell pkg-config --cflags $(PKGS))
+CXXFLAGS += -DWLR_USE_UNSTABLE -Ibuild -Ibuild/include $(shell pkg-config --cflags $(PKGS))
 LDLIBS := $(shell pkg-config --libs $(PKGS))
+
+PROTO := $(shell pkg-config --variable=pkgdatadir wayland-protocols)
+XDG_XML := $(PROTO)/stable/xdg-shell/xdg-shell.xml
 
 # wlroots headers use c99 [static n] array params, which c++ rejects.
 # keep a patched copy and put it ahead of the system one.
@@ -23,7 +26,10 @@ build/include/.stamp: | build
 	find build/include/wlr -name '*.h' | xargs sed -i 's/\[static [0-9][0-9]*\]/[]/g'
 	touch $@
 
-build/%.o: src/%.cpp build/include/.stamp | build
+build/xdg-shell-protocol.h: $(XDG_XML) | build
+	wayland-scanner server-header $< $@
+
+build/%.o: src/%.cpp build/include/.stamp build/xdg-shell-protocol.h | build
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 build:
