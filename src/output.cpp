@@ -42,4 +42,9 @@ void new_output(wl_listener *l, void *data) {
 	wl_signal_add(&wo->events.destroy, &o->destroy);
 	wl_list_insert(&s->outputs, &o->link);
 
+	wlr_output_layout_output *lo = wlr_output_layout_add_auto(s->output_layout, wo);
+	wlr_scene_output *so = wlr_scene_output_create(s->scene, wo);
+	wlr_scene_output_layout_add_output(s->scene_layout, lo, so);
+
+	wlr_log(WLR_INFO, "output %s %dx%d", wo->name, wo->width, wo->height);
 }

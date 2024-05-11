@@ -22,6 +22,14 @@ int main(void) {
 	wlr_subcompositor_create(s.display);
 	wlr_data_device_manager_create(s.display);
 
+	s.output_layout = wlr_output_layout_create(s.display);
+	wl_list_init(&s.outputs);
+	s.new_output.notify = new_output;
+	wl_signal_add(&s.backend->events.new_output, &s.new_output);
+
+	s.scene = wlr_scene_create();
+	s.scene_layout = wlr_scene_attach_output_layout(s.scene, s.output_layout);
+
 	const char *socket = wl_display_add_socket_auto(s.display);
 	if (!socket) {
 		wlr_log(WLR_ERROR, "no socket");
@@ -38,6 +46,7 @@ int main(void) {
 	wl_display_run(s.display);
 
 	wl_display_destroy_clients(s.display);
+	wlr_scene_node_destroy(&s.scene->tree.node);
 	wlr_allocator_destroy(s.allocator);
 	wlr_renderer_destroy(s.renderer);
 	wlr_backend_destroy(s.backend);
