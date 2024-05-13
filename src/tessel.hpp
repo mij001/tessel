@@ -15,6 +15,7 @@ extern "C" {
 #include <wlr/types/wlr_output.h>
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_scene.h>
+#include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 }
 
@@ -29,6 +30,10 @@ struct Server {
 	wl_listener new_output;
 	wl_list outputs;
 
+	wlr_xdg_shell *xdg_shell;
+	wl_listener new_xdg_toplevel;
+	wl_list views;
+
 };
 
 struct Output {
@@ -38,6 +43,21 @@ struct Output {
 	wl_listener frame;
 	wl_listener destroy;
 };
+
+struct View {
+	wl_list link;
+	Server *server;
+	wlr_xdg_toplevel *toplevel;
+	wlr_scene_tree *tree;
+	wl_listener map;
+	wl_listener unmap;
+	wl_listener commit;
+	wl_listener destroy;
+	wlr_box geo;
+};
+
+// view.cpp
+void new_xdg_toplevel(wl_listener *l, void *data);
 
 // output.cpp
 void new_output(wl_listener *l, void *data);
