@@ -20,3 +20,22 @@ static void view_commit(wl_listener *l, void *data) {
 	if (v->toplevel->base->initial_commit)
 		wlr_xdg_toplevel_set_size(v->toplevel, 0, 0);
 }
+
+void new_xdg_toplevel(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, new_xdg_toplevel);
+	auto *toplevel = static_cast<wlr_xdg_toplevel *>(data);
+
+	View *v = new View{};
+	v->server = s;
+	v->toplevel = toplevel;
+	v->tree = wlr_scene_xdg_surface_create(&s->scene->tree, toplevel->base);
+	v->tree->node.data = v;
+	toplevel->base->data = v->tree;
+
+	v->map.notify = view_map;
+	wl_signal_add(&toplevel->base->surface->events.map, &v->map);
+	v->unmap.notify = view_unmap;
+	wl_signal_add(&toplevel->base->surface->events.unmap, &v->unmap);
+	v->commit.notify = view_commit;
+	wl_signal_add(&toplevel->base->surface->events.commit, &v->commit);
+}
