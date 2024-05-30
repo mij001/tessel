@@ -30,6 +30,11 @@ int main(void) {
 	s.scene = wlr_scene_create();
 	s.scene_layout = wlr_scene_attach_output_layout(s.scene, s.output_layout);
 
+	wl_list_init(&s.views);
+	s.xdg_shell = wlr_xdg_shell_create(s.display, 3);
+	s.new_xdg_toplevel.notify = new_xdg_toplevel;
+	wl_signal_add(&s.xdg_shell->events.new_toplevel, &s.new_xdg_toplevel);
+
 	const char *socket = wl_display_add_socket_auto(s.display);
 	if (!socket) {
 		wlr_log(WLR_ERROR, "no socket");
