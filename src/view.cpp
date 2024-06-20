@@ -21,6 +21,15 @@ static void view_commit(wl_listener *l, void *data) {
 		wlr_xdg_toplevel_set_size(v->toplevel, 0, 0);
 }
 
+static void view_destroy(wl_listener *l, void *data) {
+	View *v = wl_container_of(l, v, destroy);
+	wl_list_remove(&v->map.link);
+	wl_list_remove(&v->unmap.link);
+	wl_list_remove(&v->commit.link);
+	wl_list_remove(&v->destroy.link);
+	delete v;
+}
+
 void new_xdg_toplevel(wl_listener *l, void *data) {
 	Server *s = wl_container_of(l, s, new_xdg_toplevel);
 	auto *toplevel = static_cast<wlr_xdg_toplevel *>(data);
@@ -38,4 +47,6 @@ void new_xdg_toplevel(wl_listener *l, void *data) {
 	wl_signal_add(&toplevel->base->surface->events.unmap, &v->unmap);
 	v->commit.notify = view_commit;
 	wl_signal_add(&toplevel->base->surface->events.commit, &v->commit);
+	v->destroy.notify = view_destroy;
+	wl_signal_add(&toplevel->events.destroy, &v->destroy);
 }
