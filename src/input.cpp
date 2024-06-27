@@ -46,3 +46,21 @@ static void new_keyboard(Server *s, wlr_input_device *device) {
 	wlr_seat_set_keyboard(s->seat, wk);
 	wl_list_insert(&s->keyboards, &k->link);
 }
+
+void new_input(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, new_input);
+	auto *device = static_cast<wlr_input_device *>(data);
+	if (device->type == WLR_INPUT_DEVICE_KEYBOARD)
+		new_keyboard(s, device);
+
+	uint32_t caps = WL_SEAT_CAPABILITY_POINTER;
+	if (!wl_list_empty(&s->keyboards))
+		caps |= WL_SEAT_CAPABILITY_KEYBOARD;
+	wlr_seat_set_capabilities(s->seat, caps);
+}
+
+void request_set_selection(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, request_set_selection);
+	auto *e = static_cast<wlr_seat_request_set_selection_event *>(data);
+	wlr_seat_set_selection(s->seat, e->source, e->serial);
+}
