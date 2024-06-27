@@ -16,7 +16,11 @@ extern "C" {
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_scene.h>
 #include <wlr/types/wlr_xdg_shell.h>
+#include <wlr/types/wlr_seat.h>
+#include <wlr/types/wlr_keyboard.h>
+#include <wlr/types/wlr_input_device.h>
 #include <wlr/util/log.h>
+#include <xkbcommon/xkbcommon.h>
 }
 
 struct Server {
@@ -33,6 +37,11 @@ struct Server {
 	wlr_xdg_shell *xdg_shell;
 	wl_listener new_xdg_toplevel;
 	wl_list views;
+
+	wlr_seat *seat;
+	wl_listener new_input;
+	wl_listener request_set_selection;
+	wl_list keyboards;
 
 };
 
@@ -54,6 +63,15 @@ struct View {
 	wl_listener commit;
 	wl_listener destroy;
 	wlr_box geo;
+};
+
+struct Keyboard {
+	wl_list link;
+	Server *server;
+	wlr_keyboard *kbd;
+	wl_listener modifiers;
+	wl_listener key;
+	wl_listener destroy;
 };
 
 // view.cpp
