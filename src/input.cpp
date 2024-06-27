@@ -13,3 +13,12 @@ static void kbd_key(wl_listener *l, void *data) {
 	wlr_seat_set_keyboard(k->server->seat, k->kbd);
 	wlr_seat_keyboard_notify_key(k->server->seat, e->time_msec, e->keycode, e->state);
 }
+
+static void kbd_destroy(wl_listener *l, void *data) {
+	Keyboard *k = wl_container_of(l, k, destroy);
+	wl_list_remove(&k->modifiers.link);
+	wl_list_remove(&k->key.link);
+	wl_list_remove(&k->destroy.link);
+	wl_list_remove(&k->link);
+	delete k;
+}
