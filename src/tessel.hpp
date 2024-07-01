@@ -80,3 +80,6 @@ void new_xdg_toplevel(wl_listener *l, void *data);
 // output.cpp
 void new_output(wl_listener *l, void *data);
 
+// input.cpp
+void new_input(wl_listener *l, void *data);
+void request_set_selection(wl_listener *l, void *data);

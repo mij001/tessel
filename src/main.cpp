@@ -35,6 +35,14 @@ int main(void) {
 	s.new_xdg_toplevel.notify = new_xdg_toplevel;
 	wl_signal_add(&s.xdg_shell->events.new_toplevel, &s.new_xdg_toplevel);
 
+	wl_list_init(&s.keyboards);
+	s.new_input.notify = new_input;
+	wl_signal_add(&s.backend->events.new_input, &s.new_input);
+	s.seat = wlr_seat_create(s.display, "seat0");
+	s.request_set_selection.notify = request_set_selection;
+	wl_signal_add(&s.seat->events.request_set_selection, &s.request_set_selection);
+	wlr_seat_set_capabilities(s.seat, WL_SEAT_CAPABILITY_POINTER);
+
 	const char *socket = wl_display_add_socket_auto(s.display);
 	if (!socket) {
 		wlr_log(WLR_ERROR, "no socket");
