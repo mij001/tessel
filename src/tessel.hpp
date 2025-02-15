@@ -20,6 +20,8 @@ extern "C" {
 #include <wlr/types/wlr_keyboard.h>
 #include <wlr/types/wlr_input_device.h>
 #include <wlr/util/log.h>
+#include <wlr/util/box.h>
+#include <wlr/util/edges.h>
 #include <xkbcommon/xkbcommon.h>
 }
 
