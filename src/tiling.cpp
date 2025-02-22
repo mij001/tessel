@@ -7,3 +7,9 @@ static void place(View *v, int x, int y, int w, int h) {
 	wlr_xdg_toplevel_set_tiled(v->toplevel,
 		WLR_EDGE_TOP | WLR_EDGE_BOTTOM | WLR_EDGE_LEFT | WLR_EDGE_RIGHT);
 }
+
+void arrange(Server *s) {
+	Output *o = wl_container_of(s->outputs.next, o, link);
+	wlr_box area;
+	wlr_output_layout_get_box(s->output_layout, o->out, &area);
+}

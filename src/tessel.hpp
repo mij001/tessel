@@ -65,6 +65,8 @@ struct View {
 	wl_listener commit;
 	wl_listener destroy;
 	wlr_box geo;
+	bool floating;
+	bool fullscreen;
 };
 
 struct Keyboard {
