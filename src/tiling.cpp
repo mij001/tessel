@@ -9,6 +9,8 @@ static void place(View *v, int x, int y, int w, int h) {
 }
 
 void arrange(Server *s) {
+	if (wl_list_empty(&s->outputs))
+		return;
 	Output *o = wl_container_of(s->outputs.next, o, link);
 	wlr_box area;
 	wlr_output_layout_get_box(s->output_layout, o->out, &area);
