@@ -45,6 +45,8 @@ struct Server {
 	wl_listener request_set_selection;
 	wl_list keyboards;
 
+	double master_ratio;
+	int gap;
 };
 
 struct Output {
@@ -77,6 +79,9 @@ struct Keyboard {
 	wl_listener key;
 	wl_listener destroy;
 };
+
+// tiling.cpp
+void arrange(Server *s);
 
 // view.cpp
 void new_xdg_toplevel(wl_listener *l, void *data);

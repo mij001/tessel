@@ -12,4 +12,25 @@ void arrange(Server *s) {
 	Output *o = wl_container_of(s->outputs.next, o, link);
 	wlr_box area;
 	wlr_output_layout_get_box(s->output_layout, o->out, &area);
+	View *vv;
+
+	int n = 0;
+	wl_list_for_each(vv, &s->views, link)
+		if (!vv->floating && !vv->fullscreen)
+			n++;
+	if (n == 0)
+		return;
+
+	int g = s->gap;
+	int x = area.x + g, y = area.y + g;
+	int w = area.width - 2 * g, h = area.height - 2 * g;
+
+	if (n == 1) {
+		wl_list_for_each(vv, &s->views, link)
+			if (!vv->floating) {
+				place(vv, x, y, w, h);
+				break;
+			}
+		return;
+	}
 }
