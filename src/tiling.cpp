@@ -35,4 +35,20 @@ void arrange(Server *s) {
 			}
 		return;
 	}
+
+	int mw = (int)(w * s->master_ratio) - g / 2;
+	int sw = w - mw - g;
+	int stack = n - 1;
+	int i = 0;
+	View *v;
+	wl_list_for_each(v, &s->views, link) {
+		if (i == 0) {
+			place(v, x, y, mw, h);
+		} else {
+			int sh = (h - (stack - 1) * g) / stack;
+			int sy = y + (i - 1) * (sh + g);
+			place(v, x + mw + g, sy, sw, sh);
+		}
+		i++;
+	}
 }
