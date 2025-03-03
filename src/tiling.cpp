@@ -47,6 +47,8 @@ void arrange(Server *s) {
 		} else {
 			int sh = (h - (stack - 1) * g) / stack;
 			int sy = y + (i - 1) * (sh + g);
+			if (i == stack)
+				sh = y + h - sy;
 			place(v, x + mw + g, sy, sw, sh);
 		}
 		i++;
