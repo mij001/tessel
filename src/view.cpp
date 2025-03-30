@@ -4,6 +4,7 @@
 static void view_map(wl_listener *l, void *data) {
 	View *v = wl_container_of(l, v, map);
 	wl_list_insert(&v->server->views, &v->link);
+	arrange(v->server);
 	wlr_log(WLR_INFO, "map %s -> %dx%d+%d+%d (%d views)",
 		v->toplevel->title ? v->toplevel->title : "?",
 		v->geo.width, v->geo.height, v->geo.x, v->geo.y,
@@ -13,6 +14,7 @@ static void view_map(wl_listener *l, void *data) {
 static void view_unmap(wl_listener *l, void *data) {
 	View *v = wl_container_of(l, v, unmap);
 	wl_list_remove(&v->link);
+	arrange(v->server);
 }
 
 static void view_commit(wl_listener *l, void *data) {
