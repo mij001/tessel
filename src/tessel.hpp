@@ -85,6 +85,7 @@ struct Keyboard {
 void arrange(Server *s);
 
 // view.cpp
+void focus_view(View *v);
 void new_xdg_toplevel(wl_listener *l, void *data);
 
 // output.cpp

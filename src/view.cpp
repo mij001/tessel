@@ -1,5 +1,24 @@
 #include "tessel.hpp"
 
+void focus_view(View *v) {
+	if (!v)
+		return;
+	Server *s = v->server;
+	wlr_surface *surface = v->toplevel->base->surface;
+	wlr_surface *prev = s->seat->keyboard_state.focused_surface;
+	if (prev == surface)
+		return;
+	wl_list_remove(&v->link);
+	wl_list_insert(&s->views, &v->link);
+	wlr_xdg_toplevel_set_activated(v->toplevel, true);
+
+	wlr_keyboard *kb = wlr_seat_get_keyboard(s->seat);
+	if (kb)
+		wlr_seat_keyboard_notify_enter(s->seat, surface, kb->keycodes,
+			kb->num_keycodes, &kb->modifiers);
+	else
+		wlr_seat_keyboard_notify_enter(s->seat, surface, NULL, 0, NULL);
+}
 
 static void view_map(wl_listener *l, void *data) {
 	View *v = wl_container_of(l, v, map);
