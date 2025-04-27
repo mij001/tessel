@@ -47,6 +47,7 @@ struct Server {
 
 	double master_ratio;
 	int gap;
+
 };
 
 struct Output {

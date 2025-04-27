@@ -5,6 +5,8 @@ int main(void) {
 	wlr_log_init(WLR_INFO, NULL);
 
 	Server s{};
+	s.master_ratio = 0.58;
+	s.gap = 8;
 	s.display = wl_display_create();
 	wl_event_loop *loop = wl_display_get_event_loop(s.display);
 
