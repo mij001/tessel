@@ -13,6 +13,7 @@ void focus_view(View *v) {
 		if (pt)
 			wlr_xdg_toplevel_set_activated(pt, false);
 	}
+	wlr_scene_node_raise_to_top(&v->tree->node);
 	wl_list_remove(&v->link);
 	wl_list_insert(&s->views, &v->link);
 	wlr_xdg_toplevel_set_activated(v->toplevel, true);
