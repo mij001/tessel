@@ -97,6 +97,8 @@ void arrange(Server *s);
 // view.cpp
 void focus_view(View *v);
 View *first_view(Server *s);
+View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
+	double *sx, double *sy);
 void new_xdg_toplevel(wl_listener *l, void *data);
 
 // output.cpp

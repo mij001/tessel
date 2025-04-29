@@ -86,3 +86,16 @@ void new_xdg_toplevel(wl_listener *l, void *data) {
 	v->destroy.notify = view_destroy;
 	wl_signal_add(&toplevel->events.destroy, &v->destroy);
 }
+
+View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
+		double *sx, double *sy) {
+	wlr_scene_node *node = wlr_scene_node_at(&s->scene->tree.node, lx, ly, sx, sy);
+	if (!node || node->type != WLR_SCENE_NODE_BUFFER)
+		return NULL;
+	wlr_scene_buffer *sb = wlr_scene_buffer_from_node(node);
+	wlr_scene_surface *ss = wlr_scene_surface_try_from_buffer(sb);
+	if (!ss)
+		return NULL;
+	*surface = ss->surface;
+	return static_cast<View *>(node->parent->node.data);
+}
