@@ -26,9 +26,17 @@ void focus_view(View *v) {
 		wlr_seat_keyboard_notify_enter(s->seat, surface, NULL, 0, NULL);
 }
 
+View *first_view(Server *s) {
+	if (wl_list_empty(&s->views))
+		return NULL;
+	View *v = wl_container_of(s->views.next, v, link);
+	return v;
+}
+
 static void view_map(wl_listener *l, void *data) {
 	View *v = wl_container_of(l, v, map);
 	wl_list_insert(&v->server->views, &v->link);
+	focus_view(v);
 	arrange(v->server);
 	wlr_log(WLR_INFO, "map %s -> %dx%d+%d+%d (%d views)",
 		v->toplevel->title ? v->toplevel->title : "?",
@@ -40,6 +48,7 @@ static void view_unmap(wl_listener *l, void *data) {
 	View *v = wl_container_of(l, v, unmap);
 	wl_list_remove(&v->link);
 	arrange(v->server);
+	focus_view(first_view(v->server));
 }
 
 static void view_commit(wl_listener *l, void *data) {
