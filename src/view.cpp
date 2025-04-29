@@ -8,6 +8,11 @@ void focus_view(View *v) {
 	wlr_surface *prev = s->seat->keyboard_state.focused_surface;
 	if (prev == surface)
 		return;
+	if (prev) {
+		wlr_xdg_toplevel *pt = wlr_xdg_toplevel_try_from_wlr_surface(prev);
+		if (pt)
+			wlr_xdg_toplevel_set_activated(pt, false);
+	}
 	wl_list_remove(&v->link);
 	wl_list_insert(&s->views, &v->link);
 	wlr_xdg_toplevel_set_activated(v->toplevel, true);
