@@ -19,6 +19,9 @@ extern "C" {
 #include <wlr/types/wlr_seat.h>
 #include <wlr/types/wlr_keyboard.h>
 #include <wlr/types/wlr_input_device.h>
+#include <wlr/types/wlr_cursor.h>
+#include <wlr/types/wlr_xcursor_manager.h>
+#include <wlr/types/wlr_pointer.h>
 #include <wlr/util/log.h>
 #include <wlr/util/box.h>
 #include <wlr/util/edges.h>
@@ -45,6 +48,13 @@ struct Server {
 	wl_listener request_set_selection;
 	wl_list keyboards;
 
+	wlr_cursor *cursor;
+	wlr_xcursor_manager *cursor_mgr;
+	wl_listener cursor_motion;
+	wl_listener cursor_motion_absolute;
+	wl_listener cursor_button;
+	wl_listener cursor_axis;
+	wl_listener cursor_frame;
 	double master_ratio;
 	int gap;
 
