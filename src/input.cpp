@@ -1,6 +1,19 @@
 #include "tessel.hpp"
 #include <cstdlib>
 #include <unistd.h>
+static void pointer_motion(Server *s, uint32_t time) {
+	double sx, sy;
+	wlr_surface *surface = NULL;
+	view_at(s, s->cursor->x, s->cursor->y, &surface, &sx, &sy);
+	if (!surface) {
+		wlr_cursor_set_xcursor(s->cursor, s->cursor_mgr, "default");
+		wlr_seat_pointer_notify_clear_focus(s->seat);
+		return;
+	}
+	wlr_seat_pointer_notify_enter(s->seat, surface, sx, sy);
+	wlr_seat_pointer_notify_motion(s->seat, time, sx, sy);
+}
+
 static void kbd_modifiers(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, modifiers);
 	wlr_seat_set_keyboard(k->server->seat, k->kbd);
