@@ -97,5 +97,8 @@ View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
 	if (!ss)
 		return NULL;
 	*surface = ss->surface;
-	return static_cast<View *>(node->parent->node.data);
+	wlr_scene_tree *tree = node->parent;
+	while (tree && !tree->node.data)
+		tree = tree->node.parent;
+	return tree ? static_cast<View *>(tree->node.data) : NULL;
 }
