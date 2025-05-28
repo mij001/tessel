@@ -27,6 +27,24 @@ void cursor_motion_absolute(wl_listener *l, void *data) {
 	wlr_cursor_warp_absolute(s->cursor, &e->pointer->base, e->x, e->y);
 	pointer_motion(s, e->time_msec);
 }
+
+void cursor_button(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, cursor_button);
+	auto *e = static_cast<wlr_pointer_button_event *>(data);
+	if (e->state == WL_POINTER_BUTTON_STATE_RELEASED) {
+		s->cursor_mode = Server::PASSTHROUGH;
+		s->grabbed = NULL;
+	} else {
+		double sx, sy;
+		wlr_surface *surface = NULL;
+		View *v = view_at(s, s->cursor->x, s->cursor->y, &surface, &sx, &sy);
+		wlr_keyboard *kb = wlr_seat_get_keyboard(s->seat);
+		uint32_t mods = kb ? wlr_keyboard_get_modifiers(kb) : 0;
+		if (v)
+			focus_view(v);
+	}
+	wlr_seat_pointer_notify_button(s->seat, e->time_msec, e->button, e->state);
+}
 static void kbd_modifiers(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, modifiers);
 	wlr_seat_set_keyboard(k->server->seat, k->kbd);

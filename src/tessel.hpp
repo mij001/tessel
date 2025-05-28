@@ -28,6 +28,8 @@ extern "C" {
 #include <xkbcommon/xkbcommon.h>
 }
 
+struct View;
+
 struct Server {
 	wl_display *display;
 	wlr_backend *backend;
@@ -58,6 +60,11 @@ struct Server {
 	double master_ratio;
 	int gap;
 
+	enum { PASSTHROUGH, MOVE, RESIZE } cursor_mode;
+	View *grabbed;
+	double grab_x, grab_y;
+	wlr_box grab_geo;
+	uint32_t resize_edges;
 };
 
 struct Output {
@@ -109,3 +116,4 @@ void new_input(wl_listener *l, void *data);
 void request_set_selection(wl_listener *l, void *data);
 void cursor_motion(wl_listener *l, void *data);
 void cursor_motion_absolute(wl_listener *l, void *data);
+void cursor_button(wl_listener *l, void *data);
