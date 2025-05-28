@@ -45,6 +45,19 @@ void cursor_button(wl_listener *l, void *data) {
 	}
 	wlr_seat_pointer_notify_button(s->seat, e->time_msec, e->button, e->state);
 }
+
+void cursor_axis(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, cursor_axis);
+	auto *e = static_cast<wlr_pointer_axis_event *>(data);
+	wlr_seat_pointer_notify_axis(s->seat, e->time_msec, e->orientation,
+		e->delta, e->delta_discrete, e->source, e->relative_direction);
+}
+
+void cursor_frame(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, cursor_frame);
+	wlr_seat_pointer_notify_frame(s->seat);
+}
+
 static void kbd_modifiers(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, modifiers);
 	wlr_seat_set_keyboard(k->server->seat, k->kbd);

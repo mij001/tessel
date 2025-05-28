@@ -117,3 +117,5 @@ void request_set_selection(wl_listener *l, void *data);
 void cursor_motion(wl_listener *l, void *data);
 void cursor_motion_absolute(wl_listener *l, void *data);
 void cursor_button(wl_listener *l, void *data);
+void cursor_axis(wl_listener *l, void *data);
+void cursor_frame(wl_listener *l, void *data);
