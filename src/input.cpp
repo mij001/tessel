@@ -14,6 +14,19 @@ static void pointer_motion(Server *s, uint32_t time) {
 	wlr_seat_pointer_notify_motion(s->seat, time, sx, sy);
 }
 
+void cursor_motion(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, cursor_motion);
+	auto *e = static_cast<wlr_pointer_motion_event *>(data);
+	wlr_cursor_move(s->cursor, &e->pointer->base, e->delta_x, e->delta_y);
+	pointer_motion(s, e->time_msec);
+}
+
+void cursor_motion_absolute(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, cursor_motion_absolute);
+	auto *e = static_cast<wlr_pointer_motion_absolute_event *>(data);
+	wlr_cursor_warp_absolute(s->cursor, &e->pointer->base, e->x, e->y);
+	pointer_motion(s, e->time_msec);
+}
 static void kbd_modifiers(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, modifiers);
 	wlr_seat_set_keyboard(k->server->seat, k->kbd);
@@ -65,6 +78,8 @@ void new_input(wl_listener *l, void *data) {
 	auto *device = static_cast<wlr_input_device *>(data);
 	if (device->type == WLR_INPUT_DEVICE_KEYBOARD)
 		new_keyboard(s, device);
+	else if (device->type == WLR_INPUT_DEVICE_POINTER)
+		wlr_cursor_attach_input_device(s->cursor, device);
 
 	uint32_t caps = WL_SEAT_CAPABILITY_POINTER;
 	if (!wl_list_empty(&s->keyboards))
