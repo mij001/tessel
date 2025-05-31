@@ -122,3 +122,4 @@ void cursor_motion_absolute(wl_listener *l, void *data);
 void cursor_button(wl_listener *l, void *data);
 void cursor_axis(wl_listener *l, void *data);
 void cursor_frame(wl_listener *l, void *data);
+void spawn(const char *cmd);

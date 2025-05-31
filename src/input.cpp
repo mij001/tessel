@@ -71,6 +71,15 @@ static void kbd_modifiers(wl_listener *l, void *data) {
 	wlr_seat_keyboard_notify_modifiers(k->server->seat, &k->kbd->modifiers);
 }
 
+void spawn(const char *cmd) {
+	if (!cmd || !*cmd)
+		return;
+	if (fork() == 0) {
+		execl("/bin/sh", "/bin/sh", "-c", cmd, (void *)NULL);
+		_exit(1);
+	}
+}
+
 static void kbd_key(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, key);
 	auto *e = static_cast<wlr_keyboard_key_event *>(data);
