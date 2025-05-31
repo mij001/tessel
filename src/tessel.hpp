@@ -57,6 +57,8 @@ struct Server {
 	wl_listener cursor_button;
 	wl_listener cursor_axis;
 	wl_listener cursor_frame;
+	wl_listener request_cursor;
+
 	double master_ratio;
 	int gap;
 
@@ -114,6 +116,7 @@ void new_output(wl_listener *l, void *data);
 // input.cpp
 void new_input(wl_listener *l, void *data);
 void request_set_selection(wl_listener *l, void *data);
+void request_cursor(wl_listener *l, void *data);
 void cursor_motion(wl_listener *l, void *data);
 void cursor_motion_absolute(wl_listener *l, void *data);
 void cursor_button(wl_listener *l, void *data);

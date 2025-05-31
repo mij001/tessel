@@ -37,12 +37,28 @@ int main(void) {
 	s.new_xdg_toplevel.notify = new_xdg_toplevel;
 	wl_signal_add(&s.xdg_shell->events.new_toplevel, &s.new_xdg_toplevel);
 
+	s.cursor = wlr_cursor_create();
+	wlr_cursor_attach_output_layout(s.cursor, s.output_layout);
+	s.cursor_mgr = wlr_xcursor_manager_create(NULL, 24);
+	s.cursor_motion.notify = cursor_motion;
+	wl_signal_add(&s.cursor->events.motion, &s.cursor_motion);
+	s.cursor_motion_absolute.notify = cursor_motion_absolute;
+	wl_signal_add(&s.cursor->events.motion_absolute, &s.cursor_motion_absolute);
+	s.cursor_button.notify = cursor_button;
+	wl_signal_add(&s.cursor->events.button, &s.cursor_button);
+	s.cursor_axis.notify = cursor_axis;
+	wl_signal_add(&s.cursor->events.axis, &s.cursor_axis);
+	s.cursor_frame.notify = cursor_frame;
+	wl_signal_add(&s.cursor->events.frame, &s.cursor_frame);
+
 	wl_list_init(&s.keyboards);
 	s.new_input.notify = new_input;
 	wl_signal_add(&s.backend->events.new_input, &s.new_input);
 	s.seat = wlr_seat_create(s.display, "seat0");
 	s.request_set_selection.notify = request_set_selection;
 	wl_signal_add(&s.seat->events.request_set_selection, &s.request_set_selection);
+	s.request_cursor.notify = request_cursor;
+	wl_signal_add(&s.seat->events.request_set_cursor, &s.request_cursor);
 	wlr_seat_set_capabilities(s.seat, WL_SEAT_CAPABILITY_POINTER);
 
 	const char *socket = wl_display_add_socket_auto(s.display);

@@ -58,6 +58,13 @@ void cursor_frame(wl_listener *l, void *data) {
 	wlr_seat_pointer_notify_frame(s->seat);
 }
 
+void request_cursor(wl_listener *l, void *data) {
+	Server *s = wl_container_of(l, s, request_cursor);
+	auto *e = static_cast<wlr_seat_pointer_request_set_cursor_event *>(data);
+	if (e->seat_client == s->seat->pointer_state.focused_client)
+		wlr_cursor_set_surface(s->cursor, e->surface, e->hotspot_x, e->hotspot_y);
+}
+
 static void kbd_modifiers(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, modifiers);
 	wlr_seat_set_keyboard(k->server->seat, k->kbd);
