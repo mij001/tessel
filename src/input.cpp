@@ -81,6 +81,24 @@ void spawn(const char *cmd) {
 	}
 }
 
+static bool keybind(Server *s, uint32_t mods, xkb_keysym_t sym) {
+	if (!(mods & s->modkey))
+		return false;
+	bool shift = mods & WLR_MODIFIER_SHIFT;
+	switch (sym) {
+	case XKB_KEY_Return:
+		spawn(getenv("TESSEL_TERMINAL") ? getenv("TESSEL_TERMINAL") : "kitty");
+		return true;
+	case XKB_KEY_q: case XKB_KEY_Q:
+		if (shift)
+			wl_display_terminate(s->display);
+		else if (View *v = first_view(s))
+			wlr_xdg_toplevel_send_close(v->toplevel);
+		return true;
+	}
+	return false;
+}
+
 static void kbd_key(wl_listener *l, void *data) {
 	Keyboard *k = wl_container_of(l, k, key);
 	auto *e = static_cast<wlr_keyboard_key_event *>(data);

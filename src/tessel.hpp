@@ -61,6 +61,7 @@ struct Server {
 
 	double master_ratio;
 	int gap;
+	uint32_t modkey;
 
 	enum { PASSTHROUGH, MOVE, RESIZE } cursor_mode;
 	View *grabbed;
