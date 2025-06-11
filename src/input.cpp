@@ -75,6 +75,7 @@ void spawn(const char *cmd) {
 	if (!cmd || !*cmd)
 		return;
 	if (fork() == 0) {
+		setsid();
 		execl("/bin/sh", "/bin/sh", "-c", cmd, (void *)NULL);
 		_exit(1);
 	}
