@@ -105,7 +105,7 @@ static void kbd_key(wl_listener *l, void *data) {
 	auto *e = static_cast<wlr_keyboard_key_event *>(data);
 
 	const xkb_keysym_t *syms;
-	int n = xkb_state_key_get_syms(k->kbd->xkb_state, e->keycode, &syms);
+	int n = xkb_state_key_get_syms(k->kbd->xkb_state, e->keycode + 8, &syms);
 	uint32_t mods = wlr_keyboard_get_modifiers(k->kbd);
 
 	if (e->state == WL_KEYBOARD_KEY_STATE_PRESSED)
