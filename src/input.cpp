@@ -81,6 +81,22 @@ void spawn(const char *cmd) {
 	}
 }
 
+static void cycle_focus(Server *s, int dir) {
+	if (wl_list_length(&s->views) < 2)
+		return;
+	View *cur = first_view(s);
+	View *next;
+	if (dir > 0)
+		next = wl_container_of(cur->link.next, next, link);
+	else
+		next = wl_container_of(cur->link.prev, next, link);
+	if (&next->link == &s->views)
+		next = dir > 0 ? wl_container_of(s->views.next, next, link)
+				: wl_container_of(s->views.prev, next, link);
+	focus_view(next);
+	arrange(s);
+}
+
 static bool keybind(Server *s, uint32_t mods, xkb_keysym_t sym) {
 	if (!(mods & s->modkey))
 		return false;
@@ -94,6 +110,12 @@ static bool keybind(Server *s, uint32_t mods, xkb_keysym_t sym) {
 			wl_display_terminate(s->display);
 		else if (View *v = first_view(s))
 			wlr_xdg_toplevel_send_close(v->toplevel);
+		return true;
+	case XKB_KEY_j: case XKB_KEY_J:
+		cycle_focus(s, 1);
+		return true;
+	case XKB_KEY_k: case XKB_KEY_K:
+		cycle_focus(s, -1);
 		return true;
 	}
 	return false;
