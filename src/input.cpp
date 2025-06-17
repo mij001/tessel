@@ -108,12 +108,15 @@ static void kbd_key(wl_listener *l, void *data) {
 	int n = xkb_state_key_get_syms(k->kbd->xkb_state, e->keycode + 8, &syms);
 	uint32_t mods = wlr_keyboard_get_modifiers(k->kbd);
 
+	bool handled = false;
 	if (e->state == WL_KEYBOARD_KEY_STATE_PRESSED)
 		for (int i = 0; i < n; i++)
-			keybind(s, mods, syms[i]);
+			handled = keybind(s, mods, syms[i]) || handled;
 
-	wlr_seat_set_keyboard(s->seat, k->kbd);
-	wlr_seat_keyboard_notify_key(s->seat, e->time_msec, e->keycode, e->state);
+	if (!handled) {
+		wlr_seat_set_keyboard(s->seat, k->kbd);
+		wlr_seat_keyboard_notify_key(s->seat, e->time_msec, e->keycode, e->state);
+	}
 }
 
 static void kbd_destroy(wl_listener *l, void *data) {
