@@ -117,6 +117,14 @@ static bool keybind(Server *s, uint32_t mods, xkb_keysym_t sym) {
 	case XKB_KEY_k: case XKB_KEY_K:
 		cycle_focus(s, -1);
 		return true;
+	case XKB_KEY_h: case XKB_KEY_H:
+		s->master_ratio -= 0.05;
+		arrange(s);
+		return true;
+	case XKB_KEY_l: case XKB_KEY_L:
+		s->master_ratio += 0.05;
+		arrange(s);
+		return true;
 	}
 	return false;
 }
