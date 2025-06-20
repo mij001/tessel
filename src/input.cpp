@@ -119,10 +119,12 @@ static bool keybind(Server *s, uint32_t mods, xkb_keysym_t sym) {
 		return true;
 	case XKB_KEY_h: case XKB_KEY_H:
 		s->master_ratio -= 0.05;
+		if (s->master_ratio < 0.1) s->master_ratio = 0.1;
 		arrange(s);
 		return true;
 	case XKB_KEY_l: case XKB_KEY_L:
 		s->master_ratio += 0.05;
+		if (s->master_ratio > 0.9) s->master_ratio = 0.9;
 		arrange(s);
 		return true;
 	}
