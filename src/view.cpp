@@ -87,6 +87,24 @@ void new_xdg_toplevel(wl_listener *l, void *data) {
 	wl_signal_add(&toplevel->events.destroy, &v->destroy);
 }
 
+struct Popup {
+	wlr_xdg_popup *popup;
+	wl_listener commit;
+	wl_listener destroy;
+};
+
+static void popup_commit(wl_listener *l, void *data) {
+	Popup *p = wl_container_of(l, p, commit);
+	wlr_xdg_surface_schedule_configure(p->popup->base);
+}
+
+static void popup_destroy(wl_listener *l, void *data) {
+	Popup *p = wl_container_of(l, p, destroy);
+	wl_list_remove(&p->commit.link);
+	wl_list_remove(&p->destroy.link);
+	delete p;
+}
+
 View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
 		double *sx, double *sy) {
 	wlr_scene_node *node = wlr_scene_node_at(&s->scene->tree.node, lx, ly, sx, sy);
