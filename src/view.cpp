@@ -95,7 +95,8 @@ struct Popup {
 
 static void popup_commit(wl_listener *l, void *data) {
 	Popup *p = wl_container_of(l, p, commit);
-	wlr_xdg_surface_schedule_configure(p->popup->base);
+	if (p->popup->base->initial_commit)
+		wlr_xdg_surface_schedule_configure(p->popup->base);
 }
 
 static void popup_destroy(wl_listener *l, void *data) {
