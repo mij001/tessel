@@ -106,6 +106,22 @@ static void popup_destroy(wl_listener *l, void *data) {
 	delete p;
 }
 
+void new_xdg_popup(wl_listener *l, void *data) {
+	auto *xp = static_cast<wlr_xdg_popup *>(data);
+	wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(xp->parent);
+	if (!parent)
+		return;
+	auto *parent_tree = static_cast<wlr_scene_tree *>(parent->data);
+	xp->base->data = wlr_scene_xdg_surface_create(parent_tree, xp->base);
+
+	Popup *p = new Popup{};
+	p->popup = xp;
+	p->commit.notify = popup_commit;
+	wl_signal_add(&xp->base->surface->events.commit, &p->commit);
+	p->destroy.notify = popup_destroy;
+	wl_signal_add(&xp->events.destroy, &p->destroy);
+}
+
 View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
 		double *sx, double *sy) {
 	wlr_scene_node *node = wlr_scene_node_at(&s->scene->tree.node, lx, ly, sx, sy);

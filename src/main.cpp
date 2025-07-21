@@ -36,6 +36,8 @@ int main(void) {
 	s.xdg_shell = wlr_xdg_shell_create(s.display, 3);
 	s.new_xdg_toplevel.notify = new_xdg_toplevel;
 	wl_signal_add(&s.xdg_shell->events.new_toplevel, &s.new_xdg_toplevel);
+	s.new_xdg_popup.notify = new_xdg_popup;
+	wl_signal_add(&s.xdg_shell->events.new_popup, &s.new_xdg_popup);
 
 	s.cursor = wlr_cursor_create();
 	wlr_cursor_attach_output_layout(s.cursor, s.output_layout);

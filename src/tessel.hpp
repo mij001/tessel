@@ -43,6 +43,7 @@ struct Server {
 
 	wlr_xdg_shell *xdg_shell;
 	wl_listener new_xdg_toplevel;
+	wl_listener new_xdg_popup;
 	wl_list views;
 
 	wlr_seat *seat;
@@ -110,6 +111,7 @@ View *first_view(Server *s);
 View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
 	double *sx, double *sy);
 void new_xdg_toplevel(wl_listener *l, void *data);
+void new_xdg_popup(wl_listener *l, void *data);
 
 // output.cpp
 void new_output(wl_listener *l, void *data);
