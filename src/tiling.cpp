@@ -42,6 +42,8 @@ void arrange(Server *s) {
 	int i = 0;
 	View *v;
 	wl_list_for_each(v, &s->views, link) {
+		if (v->floating)
+			continue;
 		if (i == 0) {
 			place(v, x, y, mw, h);
 		} else {

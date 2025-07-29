@@ -122,6 +122,14 @@ static bool keybind(Server *s, uint32_t mods, xkb_keysym_t sym) {
 		if (s->master_ratio < 0.1) s->master_ratio = 0.1;
 		arrange(s);
 		return true;
+	case XKB_KEY_space:
+		if (View *v = first_view(s)) {
+			v->floating = !v->floating;
+			if (v->floating)
+				wlr_scene_node_raise_to_top(&v->tree->node);
+			arrange(s);
+		}
+		return true;
 	case XKB_KEY_l: case XKB_KEY_L:
 		s->master_ratio += 0.05;
 		if (s->master_ratio > 0.9) s->master_ratio = 0.9;
