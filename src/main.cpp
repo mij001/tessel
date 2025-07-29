@@ -1,10 +1,18 @@
 #include "tessel.hpp"
 #include <cstdlib>
+#include <cstring>
 
-int main(void) {
+int main(int argc, char *argv[]) {
 	wlr_log_init(WLR_INFO, NULL);
 
+	const char *startup = NULL;
+	for (int i = 1; i < argc; i++)
+		if (!strcmp(argv[i], "-s") && i + 1 < argc)
+			startup = argv[++i];
+
 	Server s{};
+	const char *mod = getenv("TESSEL_MOD");
+	s.modkey = (mod && !strcmp(mod, "alt")) ? WLR_MODIFIER_ALT : WLR_MODIFIER_LOGO;
 	s.master_ratio = 0.58;
 	s.gap = 8;
 	s.display = wl_display_create();
@@ -78,6 +86,8 @@ int main(void) {
 
 	setenv("WAYLAND_DISPLAY", socket, true);
 	wlr_log(WLR_INFO, "tessel up on %s", socket);
+	if (startup)
+		spawn(startup);
 	wl_display_run(s.display);
 
 	wl_display_destroy_clients(s.display);
