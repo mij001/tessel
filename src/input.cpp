@@ -20,7 +20,31 @@ void begin_interactive(View *v, int mode, uint32_t edges) {
 	arrange(s);
 }
 
+static void do_move(Server *s) {
+	View *v = s->grabbed;
+	v->geo.x = (int)(s->cursor->x - s->grab_x);
+	v->geo.y = (int)(s->cursor->y - s->grab_y);
+	wlr_scene_node_set_position(&v->tree->node, v->geo.x, v->geo.y);
+}
+
+static void do_resize(Server *s) {
+	View *v = s->grabbed;
+	double dx = s->cursor->x - s->grab_x;
+	double dy = s->cursor->y - s->grab_y;
+	wlr_box g = s->grab_geo;
+	int x = g.x, y = g.y, w = g.width, h = g.height;
+	if (s->resize_edges & WLR_EDGE_TOP) { y = g.y + (int)dy; h = g.height - (int)dy; }
+	else if (s->resize_edges & WLR_EDGE_BOTTOM) { h = g.height + (int)dy; }
+	if (s->resize_edges & WLR_EDGE_LEFT) { x = g.x + (int)dx; w = g.width - (int)dx; }
+	else if (s->resize_edges & WLR_EDGE_RIGHT) { w = g.width + (int)dx; }
+	v->geo = {x, y, w, h};
+	wlr_scene_node_set_position(&v->tree->node, x, y);
+	wlr_xdg_toplevel_set_size(v->toplevel, w, h);
+}
+
 static void pointer_motion(Server *s, uint32_t time) {
+	if (s->cursor_mode == Server::MOVE) { do_move(s); return; }
+	if (s->cursor_mode == Server::RESIZE) { do_resize(s); return; }
 	double sx, sy;
 	wlr_surface *surface = NULL;
 	view_at(s, s->cursor->x, s->cursor->y, &surface, &sx, &sy);
