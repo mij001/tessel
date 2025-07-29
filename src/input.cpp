@@ -1,6 +1,25 @@
 #include "tessel.hpp"
 #include <cstdlib>
 #include <unistd.h>
+
+void begin_interactive(View *v, int mode, uint32_t edges) {
+	Server *s = v->server;
+	v->floating = true;
+	s->grabbed = v;
+	s->cursor_mode = (decltype(s->cursor_mode))mode;
+	if (mode == Server::MOVE) {
+		s->grab_x = s->cursor->x - v->geo.x;
+		s->grab_y = s->cursor->y - v->geo.y;
+	} else {
+		s->grab_x = s->cursor->x;
+		s->grab_y = s->cursor->y;
+		s->grab_geo = v->geo;
+		s->resize_edges = edges;
+	}
+	wlr_scene_node_raise_to_top(&v->tree->node);
+	arrange(s);
+}
+
 static void pointer_motion(Server *s, uint32_t time) {
 	double sx, sy;
 	wlr_surface *surface = NULL;

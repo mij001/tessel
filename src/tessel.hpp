@@ -127,3 +127,4 @@ void cursor_button(wl_listener *l, void *data);
 void cursor_axis(wl_listener *l, void *data);
 void cursor_frame(wl_listener *l, void *data);
 void spawn(const char *cmd);
+void begin_interactive(View *v, int mode, uint32_t edges);
