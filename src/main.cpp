@@ -53,6 +53,8 @@ int main(void) {
 	s.cursor_frame.notify = cursor_frame;
 	wl_signal_add(&s.cursor->events.frame, &s.cursor_frame);
 
+	wlr_xdg_output_manager_v1_create(s.display, s.output_layout);
+
 	wl_list_init(&s.keyboards);
 	s.new_input.notify = new_input;
 	wl_signal_add(&s.backend->events.new_input, &s.new_input);
