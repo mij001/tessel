@@ -37,6 +37,8 @@ static void do_resize(Server *s) {
 	else if (s->resize_edges & WLR_EDGE_BOTTOM) { h = g.height + (int)dy; }
 	if (s->resize_edges & WLR_EDGE_LEFT) { x = g.x + (int)dx; w = g.width - (int)dx; }
 	else if (s->resize_edges & WLR_EDGE_RIGHT) { w = g.width + (int)dx; }
+	if (w < 48) w = 48;
+	if (h < 48) h = 48;
 	v->geo = {x, y, w, h};
 	wlr_scene_node_set_position(&v->tree->node, x, y);
 	wlr_xdg_toplevel_set_size(v->toplevel, w, h);
