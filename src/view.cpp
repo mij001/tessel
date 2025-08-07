@@ -66,6 +66,17 @@ static void view_destroy(wl_listener *l, void *data) {
 	delete v;
 }
 
+static void view_request_move(wl_listener *l, void *data) {
+	View *v = wl_container_of(l, v, request_move);
+	begin_interactive(v, Server::MOVE, 0);
+}
+
+static void view_request_resize(wl_listener *l, void *data) {
+	View *v = wl_container_of(l, v, request_resize);
+	auto *e = static_cast<wlr_xdg_toplevel_resize_event *>(data);
+	begin_interactive(v, Server::RESIZE, e->edges);
+}
+
 void new_xdg_toplevel(wl_listener *l, void *data) {
 	Server *s = wl_container_of(l, s, new_xdg_toplevel);
 	auto *toplevel = static_cast<wlr_xdg_toplevel *>(data);
@@ -85,6 +96,10 @@ void new_xdg_toplevel(wl_listener *l, void *data) {
 	wl_signal_add(&toplevel->base->surface->events.commit, &v->commit);
 	v->destroy.notify = view_destroy;
 	wl_signal_add(&toplevel->events.destroy, &v->destroy);
+	v->request_move.notify = view_request_move;
+	wl_signal_add(&toplevel->events.request_move, &v->request_move);
+	v->request_resize.notify = view_request_resize;
+	wl_signal_add(&toplevel->events.request_resize, &v->request_resize);
 }
 
 struct Popup {

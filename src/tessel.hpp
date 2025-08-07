@@ -89,6 +89,8 @@ struct View {
 	wl_listener unmap;
 	wl_listener commit;
 	wl_listener destroy;
+	wl_listener request_move;
+	wl_listener request_resize;
 	wlr_box geo;
 	bool floating;
 	bool fullscreen;

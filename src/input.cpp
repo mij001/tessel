@@ -1,6 +1,7 @@
 #include "tessel.hpp"
 #include <cstdlib>
 #include <unistd.h>
+#include <linux/input-event-codes.h>
 
 void begin_interactive(View *v, int mode, uint32_t edges) {
 	Server *s = v->server;
@@ -85,6 +86,12 @@ void cursor_button(wl_listener *l, void *data) {
 		View *v = view_at(s, s->cursor->x, s->cursor->y, &surface, &sx, &sy);
 		wlr_keyboard *kb = wlr_seat_get_keyboard(s->seat);
 		uint32_t mods = kb ? wlr_keyboard_get_modifiers(kb) : 0;
+		if (v && (mods & s->modkey)) {
+			focus_view(v);
+			begin_interactive(v, e->button == BTN_RIGHT ? Server::RESIZE : Server::MOVE,
+				WLR_EDGE_BOTTOM | WLR_EDGE_RIGHT);
+			return;
+		}
 		if (v)
 			focus_view(v);
 	}
