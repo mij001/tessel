@@ -14,7 +14,15 @@ void arrange(Server *s) {
 	Output *o = wl_container_of(s->outputs.next, o, link);
 	wlr_box area;
 	wlr_output_layout_get_box(s->output_layout, o->out, &area);
+
+	View *fs = NULL;
 	View *vv;
+	wl_list_for_each(vv, &s->views, link)
+		if (vv->fullscreen) { fs = vv; break; }
+	if (fs) {
+		place(fs, area.x, area.y, area.width, area.height);
+		return;
+	}
 
 	int n = 0;
 	wl_list_for_each(vv, &s->views, link)

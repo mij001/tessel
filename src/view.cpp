@@ -65,11 +65,23 @@ static void view_destroy(wl_listener *l, void *data) {
 	wl_list_remove(&v->destroy.link);
 	wl_list_remove(&v->request_move.link);
 	wl_list_remove(&v->request_resize.link);
+	wl_list_remove(&v->request_fullscreen.link);
 	if (v == v->server->grabbed) {
 		v->server->grabbed = NULL;
 		v->server->cursor_mode = Server::PASSTHROUGH;
 	}
 	delete v;
+}
+
+static void view_request_fullscreen(wl_listener *l, void *data) {
+	View *v = wl_container_of(l, v, request_fullscreen);
+	if (!v->toplevel->base->surface->mapped)
+		return;
+	v->fullscreen = v->toplevel->requested.fullscreen;
+	wlr_xdg_toplevel_set_fullscreen(v->toplevel, v->fullscreen);
+	if (v->fullscreen)
+		wlr_scene_node_raise_to_top(&v->tree->node);
+	arrange(v->server);
 }
 
 static void view_request_move(wl_listener *l, void *data) {
@@ -106,6 +118,8 @@ void new_xdg_toplevel(wl_listener *l, void *data) {
 	wl_signal_add(&toplevel->events.request_move, &v->request_move);
 	v->request_resize.notify = view_request_resize;
 	wl_signal_add(&toplevel->events.request_resize, &v->request_resize);
+	v->request_fullscreen.notify = view_request_fullscreen;
+	wl_signal_add(&toplevel->events.request_fullscreen, &v->request_fullscreen);
 }
 
 struct Popup {
