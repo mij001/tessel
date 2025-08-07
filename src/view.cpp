@@ -63,6 +63,12 @@ static void view_destroy(wl_listener *l, void *data) {
 	wl_list_remove(&v->unmap.link);
 	wl_list_remove(&v->commit.link);
 	wl_list_remove(&v->destroy.link);
+	wl_list_remove(&v->request_move.link);
+	wl_list_remove(&v->request_resize.link);
+	if (v == v->server->grabbed) {
+		v->server->grabbed = NULL;
+		v->server->cursor_mode = Server::PASSTHROUGH;
+	}
 	delete v;
 }
 
