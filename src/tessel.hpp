@@ -30,6 +30,8 @@ extern "C" {
 #include <xkbcommon/xkbcommon.h>
 }
 
+#define BORDER 2
+
 struct View;
 
 struct Server {
@@ -87,6 +89,8 @@ struct View {
 	Server *server;
 	wlr_xdg_toplevel *toplevel;
 	wlr_scene_tree *tree;
+	wlr_scene_tree *surface_tree;
+	wlr_scene_rect *border;
 	wl_listener map;
 	wl_listener unmap;
 	wl_listener commit;

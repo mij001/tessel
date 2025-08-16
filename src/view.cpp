@@ -102,9 +102,13 @@ void new_xdg_toplevel(wl_listener *l, void *data) {
 	View *v = new View{};
 	v->server = s;
 	v->toplevel = toplevel;
-	v->tree = wlr_scene_xdg_surface_create(&s->scene->tree, toplevel->base);
+	static const float col[4] = {0.20f, 0.20f, 0.24f, 1.0f};
+	v->tree = wlr_scene_tree_create(&s->scene->tree);
+	v->border = wlr_scene_rect_create(v->tree, 0, 0, col);
+	v->surface_tree = wlr_scene_xdg_surface_create(v->tree, toplevel->base);
+	wlr_scene_node_set_position(&v->surface_tree->node, BORDER, BORDER);
 	v->tree->node.data = v;
-	toplevel->base->data = v->tree;
+	toplevel->base->data = v->surface_tree;
 
 	v->map.notify = view_map;
 	wl_signal_add(&toplevel->base->surface->events.map, &v->map);
