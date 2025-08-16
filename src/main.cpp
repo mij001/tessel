@@ -47,6 +47,10 @@ int main(int argc, char *argv[]) {
 	s.new_xdg_popup.notify = new_xdg_popup;
 	wl_signal_add(&s.xdg_shell->events.new_popup, &s.new_xdg_popup);
 
+	wlr_xdg_decoration_manager_v1 *deco = wlr_xdg_decoration_manager_v1_create(s.display);
+	s.new_decoration.notify = new_decoration;
+	wl_signal_add(&deco->events.new_toplevel_decoration, &s.new_decoration);
+
 	s.cursor = wlr_cursor_create();
 	wlr_cursor_attach_output_layout(s.cursor, s.output_layout);
 	s.cursor_mgr = wlr_xcursor_manager_create(NULL, 24);

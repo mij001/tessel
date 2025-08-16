@@ -23,6 +23,7 @@ extern "C" {
 #include <wlr/types/wlr_xcursor_manager.h>
 #include <wlr/types/wlr_pointer.h>
 #include <wlr/types/wlr_xdg_output_v1.h>
+#include <wlr/types/wlr_xdg_decoration_v1.h>
 #include <wlr/util/log.h>
 #include <wlr/util/box.h>
 #include <wlr/util/edges.h>
@@ -45,6 +46,7 @@ struct Server {
 	wlr_xdg_shell *xdg_shell;
 	wl_listener new_xdg_toplevel;
 	wl_listener new_xdg_popup;
+	wl_listener new_decoration;
 	wl_list views;
 
 	wlr_seat *seat;
@@ -116,6 +118,7 @@ View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
 	double *sx, double *sy);
 void new_xdg_toplevel(wl_listener *l, void *data);
 void new_xdg_popup(wl_listener *l, void *data);
+void new_decoration(wl_listener *l, void *data);
 
 // output.cpp
 void new_output(wl_listener *l, void *data);

@@ -141,6 +141,12 @@ static void popup_destroy(wl_listener *l, void *data) {
 	delete p;
 }
 
+void new_decoration(wl_listener *l, void *data) {
+	auto *deco = static_cast<wlr_xdg_toplevel_decoration_v1 *>(data);
+	wlr_xdg_toplevel_decoration_v1_set_mode(deco,
+		WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE);
+}
+
 void new_xdg_popup(wl_listener *l, void *data) {
 	auto *xp = static_cast<wlr_xdg_popup *>(data);
 	wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(xp->parent);
