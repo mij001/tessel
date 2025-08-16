@@ -24,6 +24,17 @@ void focus_view(View *v) {
 			kb->num_keycodes, &kb->modifiers);
 	else
 		wlr_seat_keyboard_notify_enter(s->seat, surface, NULL, 0, NULL);
+	paint_borders(s);
+}
+
+void paint_borders(Server *s) {
+	static const float active[4]   = {0.35f, 0.55f, 0.85f, 1.0f};
+	static const float inactive[4] = {0.20f, 0.20f, 0.24f, 1.0f};
+	wlr_surface *focused = s->seat->keyboard_state.focused_surface;
+	View *v;
+	wl_list_for_each(v, &s->views, link)
+		wlr_scene_rect_set_color(v->border,
+			v->toplevel->base->surface == focused ? active : inactive);
 }
 
 View *first_view(Server *s) {

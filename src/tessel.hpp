@@ -123,6 +123,7 @@ View *view_at(Server *s, double lx, double ly, wlr_surface **surface,
 void new_xdg_toplevel(wl_listener *l, void *data);
 void new_xdg_popup(wl_listener *l, void *data);
 void new_decoration(wl_listener *l, void *data);
+void paint_borders(Server *s);
 
 // output.cpp
 void new_output(wl_listener *l, void *data);
