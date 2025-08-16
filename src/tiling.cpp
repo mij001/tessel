@@ -1,10 +1,16 @@
 #include "tessel.hpp"
 
+void clip_view(View *v) {
+	wlr_box clip = {0, 0, v->geo.width - 2 * BORDER, v->geo.height - 2 * BORDER};
+	wlr_scene_subsurface_tree_set_clip(&v->surface_tree->node, &clip);
+}
+
 static void place(View *v, int x, int y, int w, int h) {
 	v->geo = {x, y, w, h};
 	wlr_scene_node_set_position(&v->tree->node, x, y);
 	wlr_scene_rect_set_size(v->border, w, h);
 	wlr_xdg_toplevel_set_size(v->toplevel, w - 2 * BORDER, h - 2 * BORDER);
+	clip_view(v);
 	wlr_xdg_toplevel_set_tiled(v->toplevel,
 		WLR_EDGE_TOP | WLR_EDGE_BOTTOM | WLR_EDGE_LEFT | WLR_EDGE_RIGHT);
 }

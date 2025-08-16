@@ -114,6 +114,7 @@ struct Keyboard {
 
 // tiling.cpp
 void arrange(Server *s);
+void clip_view(View *v);
 
 // view.cpp
 void focus_view(View *v);

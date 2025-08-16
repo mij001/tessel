@@ -64,6 +64,9 @@ static void view_unmap(wl_listener *l, void *data) {
 
 static void view_commit(wl_listener *l, void *data) {
 	View *v = wl_container_of(l, v, commit);
+	// the clip has to follow the buffer, not just the tile we asked for
+	if (v->toplevel->base->surface->mapped)
+		clip_view(v);
 	if (v->toplevel->base->initial_commit)
 		wlr_xdg_toplevel_set_size(v->toplevel, 0, 0);
 }
