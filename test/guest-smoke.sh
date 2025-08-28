@@ -9,7 +9,7 @@ export WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_HEADLESS_OUTPUTS=1
 pkill -x tessel 2>/dev/null
 sleep 1
 rm -f /tmp/t.log
-setsid "$HOME/tessel/build/tessel" >/tmp/t.log 2>&1 &
+setsid tessel >/tmp/t.log 2>&1 &
 for i in $(seq 40); do grep -q 'tessel up' /tmp/t.log && break; sleep 0.25; done
 
 WD=$(sed -n 's/.*tessel up on \([a-z0-9_-]*\).*/\1/p' /tmp/t.log)

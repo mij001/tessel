@@ -1,5 +1,9 @@
 PKGS := wlroots-0.18 wayland-server xkbcommon pixman-1
 
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
+DATADIR ?= $(PREFIX)/share
+
 CXX ?= g++
 CXXFLAGS ?= -O2 -g -std=c++17 -Wall -Wextra -Wno-unused-parameter
 CXXFLAGS += -DWLR_USE_UNSTABLE -Ibuild -Ibuild/include $(shell pkg-config --cflags $(PKGS))
@@ -35,7 +39,16 @@ build/%.o: src/%.cpp build/include/.stamp build/xdg-shell-protocol.h | build
 build:
 	mkdir -p build
 
+install: all
+	install -Dm755 build/tessel $(DESTDIR)$(BINDIR)/tessel
+	install -Dm755 tessel-session $(DESTDIR)$(BINDIR)/tessel-session
+	install -Dm644 tessel.desktop $(DESTDIR)$(DATADIR)/wayland-sessions/tessel.desktop
+
+uninstall:
+	rm -f $(DESTDIR)$(BINDIR)/tessel $(DESTDIR)$(BINDIR)/tessel-session
+	rm -f $(DESTDIR)$(DATADIR)/wayland-sessions/tessel.desktop
+
 clean:
 	rm -rf build
 
-.PHONY: all clean
+.PHONY: all install uninstall clean
