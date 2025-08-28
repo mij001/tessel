@@ -1,0 +1,11 @@
+#!/bin/sh
+# start tessel from a tty. logind hands the session the gpu and the input
+# devices, so this needs no root and no seatd.
+[ -n "$XDG_RUNTIME_DIR" ] || XDG_RUNTIME_DIR=/run/user/$(id -u)
+export XDG_RUNTIME_DIR
+[ -d "$XDG_RUNTIME_DIR" ] || { mkdir -p "$XDG_RUNTIME_DIR"; chmod 700 "$XDG_RUNTIME_DIR"; }
+
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=tessel
+
+tessel "$@" 2>&1 | tee "$XDG_RUNTIME_DIR/tessel.log"
