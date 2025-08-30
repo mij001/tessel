@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=tessel
+Comment=Tiling wayland compositor
+Exec=tessel-session
+Type=Application
+DesktopNames=tessel
