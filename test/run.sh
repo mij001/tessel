@@ -1,4 +1,6 @@
 #!/bin/sh
+# boot the test vm. it opens a qemu window and autologs into tty1, which is
+# where you run tessel-session. HEADLESS=1 boots it without a window.
 set -e
 cd "$(dirname "$0")/.."
 V=.vm
@@ -12,13 +14,17 @@ fi
 ACCEL=tcg; CPU=max
 [ -w /dev/kvm ] && { ACCEL=kvm; CPU=host; }
 
+if [ -n "$HEADLESS" ]; then DISP="-display none"; else DISP="-display ${VM_DISPLAY:-gtk}"; fi
+
 setsid qemu-system-x86_64 \
 	-M q35 -accel $ACCEL -cpu $CPU -m ${VM_RAM:-2560} -smp ${VM_CPUS:-4} \
 	-drive file=$V/disk.qcow2,if=virtio,format=qcow2 \
 	-drive file=$V/seed.iso,if=virtio,format=raw,readonly=on \
 	-netdev user,id=n0,hostfwd=tcp::2222-:22 \
 	-device virtio-net-pci,netdev=n0 \
-	-serial file:$V/console.log -monitor none -display none \
+	-vga none -device virtio-gpu-pci \
+	-device virtio-keyboard-pci -device virtio-tablet-pci \
+	-serial file:$V/console.log -monitor unix:$V/monitor,server,nowait $DISP \
 	-pidfile $V/pid </dev/null >/dev/null 2>&1 &
 disown 2>/dev/null || true
 
