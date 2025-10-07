@@ -20,3 +20,9 @@ while [ -n "$LINE" ]; do
 	esac
 	keys="$keys $k"
 done
+
+{
+	for k in $keys; do echo "sendkey $k"; sleep 0.05; done
+	echo "sendkey ret"
+	sleep 0.2
+} | socat - unix-connect:.vm/monitor >/dev/null
