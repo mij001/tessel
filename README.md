@@ -47,3 +47,28 @@ sudo dnf install kitty
 for starting a bar or a terminal automatically.
 
 A display manager will also list tessel as a session, via the desktop file.
+
+## Keys
+
+| key           | action               |
+|---------------|----------------------|
+| mod+Return    | spawn terminal       |
+| mod+q         | close window         |
+| mod+Shift+q   | quit                 |
+| mod+j / k     | focus next / prev    |
+| mod+h / l     | shrink / grow master |
+| mod+Space     | toggle floating      |
+| mod+drag      | move (L), resize (R) |
+
+Terminal comes from `$TESSEL_TERMINAL`, default `kitty`.
+
+## Layout
+
+One master column on the left, everything else stacked down the right.
+`mod+h` and `mod+l` move the split. Floating and fullscreen windows are skipped
+by the tiler.
+
+## Testing
+
+`test/` is a throwaway Fedora VM, used only to try tessel on a machine that has
+no window manager. It is not needed to build or run tessel.
