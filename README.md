@@ -72,3 +72,20 @@ by the tiler.
 
 `test/` is a throwaway Fedora VM, used only to try tessel on a machine that has
 no window manager. It is not needed to build or run tessel.
+
+```
+sh test/setup.sh      # fedora cloud image + cloud-init seed + overlay disk
+sh test/run.sh        # boots it in a qemu window, autologs into tty1
+sh test/provision.sh  # build deps and a terminal
+sh test/sync.sh       # copy the source in, build, install
+```
+
+Then type `tessel-session` at the tty in the QEMU window and it comes up on the
+virtio-GPU, same as it would on real hardware.
+
+There is also a headless check that starts tessel with no display and asserts
+that n clients got tiled:
+
+```
+sh test/smoke.sh 3
+```
